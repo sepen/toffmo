@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 #
 # Toffmo: The Office Motivator
+# by Jose V Beneyto, sepen at users dot sourceforge dot net
 
 import ConfigParser
 import pygtk
@@ -12,7 +13,8 @@ import datetime
 class Toffmo:
 	
 	CONFIG_FILE='toffmo.conf'
-	MONEY_PER_HOUR='10'
+	
+	MONEY_PER_HOUR=10
 	MONEY_SUFFIX='EUR'
 	TIME_WORK_START='08:00'
 	TIME_WORK_STOP='17:30'
@@ -22,21 +24,23 @@ class Toffmo:
 	def parse_config_file(self):
 		cfg = ConfigParser.ConfigParser()
 		cfg.readfp(file(self.CONFIG_FILE))
+		
 		self.MONEY_PER_HOUR = cfg.get('userconf', 'MONEY_PER_HOUR'.lower())
 		self.MONEY_SUFFIX = cfg.get('userconf', 'MONEY_SUFFIX'.lower())
 		self.TIME_WORK_START = cfg.get('userconf', 'TIME_WORK_START'.lower())
 		self.TIME_WORK_STOP = cfg.get('userconf', 'TIME_WORK_STOP'.lower())
 		self.TIME_PAUSE_START = cfg.get('userconf', 'TIME_PAUSE_START'.lower())
 		self.TIME_PAUSE_STOP = cfg.get('userconf', 'TIME_PAUSE_STOP'.lower())
-		return
+		
+		return True
 	
 	def get_today_date(self):
 		return datetime.datetime.now().strftime("%A %B %d %I:%M:%S %p %Y")
 	
-	def get_today_money(self):
-		money = ""
+	def get_elapsed_time(self):
 		date_now = datetime.datetime.now()
 		time_now = datetime.time(date_now.hour, date_now.minute, date_now.second)
+		
 		time_work_start_list = self.TIME_WORK_START.split(':')
 		time_work_start = datetime.time(int(time_work_start_list[0]), int(time_work_start_list[1]))
 		time_work_stop_list = self.TIME_WORK_STOP.split(':')
@@ -45,23 +49,33 @@ class Toffmo:
 		time_pause_start = datetime.time(int(time_pause_start_list[0]), int(time_pause_start_list[1]))
 		time_pause_stop_list = self.TIME_WORK_START.split(':')
 		time_pause_stop = datetime.time(int(time_pause_stop_list[0]), int(time_pause_stop_list[1]))
+		
+		h = time_now.hour - time_work_start.hour
+		m = time_now.minute - time_work_start.minute
+		s = time_now.second - time_work_start.second
+		
 		if time_work_start < time_now < time_pause_start:
 			print "DEBUG> de manyanas y cobro"
-			money = ""
 		elif time_pause_start < time_now < time_pause_stop:
 			print "DEBUG> comiendo y no cobro"
-			money = ""
 		elif time_pause_stop < time_now < time_work_stop:
 			print "DEBUG> de tardes y cobro"
-			money = ""
 		else:
 			print "DEBUG> fuera de hora y no cobro"
-			money = ""
+			
+		return datetime.timedelta(hours=h, minutes=m, seconds=s)
+
+	def get_today_money(self):
+		time = self.get_elapsed_time()
+		money_per_second = float(self.MONEY_PER_HOUR) / 3600
+		money = int(time.seconds * money_per_second)
 		return money
 	
 	def get_text_message(self):
-		message = self.get_today_date() + "\nEarned today: " \
-			+ self.get_today_money() + " " + self.MONEY_SUFFIX + "\n"
+		message = self.get_today_date() + "\n" \
+			+ "* Work payed: " + str(self.get_elapsed_time()) + "\n" \
+			+ "* Earned: " + str(self.get_today_money()) +  " " \
+			+ self.MONEY_SUFFIX + "\n"
 		return message
 	
 	def close_application(self, widget, event, data=None):
@@ -77,7 +91,7 @@ class Toffmo:
 		window.set_border_width(10)
 		window.set_size_request(300, 420)
 		window.set_resizable(False)
-		window.set_title("toffmo 0.1-beta1")
+		window.set_title("toffmo 0.1-beta2")
 		# create vbox
 		vbox = gtk.VBox(False, 0)
 		window.add(vbox)
@@ -99,7 +113,7 @@ class Toffmo:
 		
 def main():
     gtk.main()
-    return 0
+    return True
   
 if __name__ == "__main__":
   Toffmo()
