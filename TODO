@@ -1,0 +1,5 @@
+
+TODO
+
+* use cx_freeze (http://starship.python.net/crew/atuining/cx_Freeze)
+* systray (http://www.pygtk.org/docs/pygtk/class-gtkstatusicon.html)
