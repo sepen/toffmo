@@ -47,23 +47,27 @@ class Toffmo:
 		time_work_stop = datetime.time(int(time_work_stop_list[0]), int(time_work_stop_list[1]))
 		time_pause_start_list = self.TIME_PAUSE_START.split(':')
 		time_pause_start = datetime.time(int(time_pause_start_list[0]), int(time_pause_start_list[1]))
-		time_pause_stop_list = self.TIME_WORK_START.split(':')
+		time_pause_stop_list = self.TIME_PAUSE_STOP.split(':')
 		time_pause_stop = datetime.time(int(time_pause_stop_list[0]), int(time_pause_stop_list[1]))
 		
-		h = time_now.hour - time_work_start.hour
-		m = time_now.minute - time_work_start.minute
-		s = time_now.second - time_work_start.second
+		t_now = datetime.timedelta(hours=time_now.hour, minutes=time_now.minute, seconds=time_now.second)
+		t_work_start = datetime.timedelta(hours=time_work_start.hour, minutes=time_work_start.minute, seconds=time_work_start.second)
+		t_pause_start = datetime.timedelta(hours=time_pause_start.hour, minutes=time_pause_start.minute, seconds=time_pause_start.second)
+		t_pause_stop = datetime.timedelta(hours=time_pause_stop.hour, minutes=time_pause_stop.minute, seconds=time_pause_stop.second)
 		
 		if time_work_start < time_now < time_pause_start:
-			print "DEBUG> de manyanas y cobro"
+			#print "DEBUG> de manyanas y cobro"
+			t = t_now - t_work_start
 		elif time_pause_start < time_now < time_pause_stop:
-			print "DEBUG> comiendo y no cobro"
+			#print "DEBUG> comiendo y no cobro"
+			t = t_pause_start - t_work_start
 		elif time_pause_stop < time_now < time_work_stop:
-			print "DEBUG> de tardes y cobro"
+			#print "DEBUG> de tardes y cobro"
+			t = (t_now - t_pause_stop) + (t_pause_start - t_work_start)
 		else:
-			print "DEBUG> fuera de hora y no cobro"
-			
-		return datetime.timedelta(hours=h, minutes=m, seconds=s)
+			#print "DEBUG> fuera de hora y no cobro"
+			t = t_now - t_now
+		return t
 
 	def get_today_money(self):
 		time = self.get_elapsed_time()
