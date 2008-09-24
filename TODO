@@ -1,5 +1,11 @@
 
 TODO
 
-* use cx_freeze (http://starship.python.net/crew/atuining/cx_Freeze)
-* systray (http://www.pygtk.org/docs/pygtk/class-gtkstatusicon.html)
+* fix date issues
+
+* cx_freeze
+  http://starship.python.net/crew/atuining/cx_Freeze
+
+* systray
+  http://www.pygtk.org/docs/pygtk/class-gtkstatusicon.html
+  http://www.daa.com.au/pipermail/pygtk/2005-August/010790.html
