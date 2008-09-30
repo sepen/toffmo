@@ -15,7 +15,10 @@ class Toffmo:
 	APP_NAME='toffmo'
 	APP_VERSION='0.1-rc1'
 	
+	CONFIG_DIR=''
 	CONFIG_FILE='toffmo.conf'
+	
+	DATA_DIR=''
 	
 	MONEY_PER_HOUR=10
 	MONEY_SUFFIX='EUR'
@@ -26,7 +29,7 @@ class Toffmo:
 	
 	def parse_config_file(self):
 		cfg = ConfigParser.ConfigParser()
-		cfg.readfp(file(self.CONFIG_FILE))
+		cfg.readfp(file(self.CONFIG_DIR + self.CONFIG_FILE))
 		
 		self.MONEY_PER_HOUR = cfg.get('userconf', 'MONEY_PER_HOUR'.lower())
 		self.MONEY_SUFFIX = cfg.get('userconf', 'MONEY_SUFFIX'.lower())
@@ -106,7 +109,7 @@ class Toffmo:
 		vbox.show()
 		# add image to vbox
 		image = gtk.Image()
-		image.set_from_file("earn.jpg")
+		image.set_from_file(self.DATA_DIR + "earn.jpg")
 		vbox.add(image)
 		image.show()
 		# add frame and label to vbox

@@ -1,0 +1,26 @@
+
+INSTALL
+
+
+Installation examples:
+
+
+  # make install
+    
+    result:
+      /usr/local/bin/toffmo
+      /usr/local/etc/toffmo.conf
+      /usr/local/share/toffmo/*.jpg
+
+
+  # make install \
+      DESTDIR=/opt \
+      BINDIR=/bin \
+      CONFDIR=/etc \
+      DATADIR=/share/toffmo 
+
+    result:
+      /opt/bin/toffmo
+      /opt/etc/toffmo.conf
+      /opt/share/toffmo/*.jpg
+    
