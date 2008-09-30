@@ -12,6 +12,9 @@ import datetime
 
 class Toffmo:
 	
+	APP_NAME='toffmo'
+	APP_VERSION='0.1-rc1'
+	
 	CONFIG_FILE='toffmo.conf'
 	
 	MONEY_PER_HOUR=10
@@ -35,7 +38,7 @@ class Toffmo:
 		return True
 	
 	def get_today_date(self):
-		return datetime.datetime.now().strftime("%A %B %d %I:%M:%S %p %Y")
+		return datetime.datetime.now().strftime("%H:%M - %d/%m/%Y")
 	
 	def get_elapsed_time(self):
 		date_now = datetime.datetime.now()
@@ -76,9 +79,10 @@ class Toffmo:
 		return money
 	
 	def get_text_message(self):
-		message = self.get_today_date() + "\n" \
-			+ "* Work payed: " + str(self.get_elapsed_time()) + "\n" \
-			+ "* Earned: " + str(self.get_today_money()) +  " " \
+		message = "\n" + self.get_today_date() + "\n\n" \
+			+ "Hours: " + str(self.get_elapsed_time()) + " (" \
+			+ self.MONEY_PER_HOUR + self.MONEY_SUFFIX + "/hour)\n" \
+			+ "Earned: " + str(self.get_today_money()) +  " " \
 			+ self.MONEY_SUFFIX + "\n"
 		return message
 	
@@ -93,16 +97,16 @@ class Toffmo:
 		window = gtk.Window(gtk.WINDOW_TOPLEVEL)
 		window.connect("delete_event", self.close_application)
 		window.set_border_width(10)
-		window.set_size_request(300, 420)
+		window.set_size_request(205, 370) # width x height
 		window.set_resizable(False)
-		window.set_title("toffmo 0.1-beta2")
+		window.set_title("toffmo")
 		# create vbox
 		vbox = gtk.VBox(False, 0)
 		window.add(vbox)
 		vbox.show()
 		# add image to vbox
 		image = gtk.Image()
-		image.set_from_file("image.jpg")
+		image.set_from_file("earn.jpg")
 		vbox.add(image)
 		image.show()
 		# add frame and label to vbox
