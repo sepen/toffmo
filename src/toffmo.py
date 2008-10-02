@@ -27,6 +27,8 @@ class Toffmo:
 	TIME_PAUSE_START='13:30'
 	TIME_PAUSE_STOP='14:30'
 	
+	STATUS='stalled'
+	
 	def parse_config_file(self):
 		cfg = ConfigParser.ConfigParser()
 		cfg.readfp(file(self.CONFIG_DIR + self.CONFIG_FILE))
@@ -62,15 +64,19 @@ class Toffmo:
 		t_pause_stop = datetime.timedelta(hours=time_pause_stop.hour, minutes=time_pause_stop.minute, seconds=time_pause_stop.second)
 		
 		if time_work_start < time_now < time_pause_start:
+			self.STATUS='running'
 			#print "DEBUG> de manyanas y cobro"
 			t = t_now - t_work_start
 		elif time_pause_start < time_now < time_pause_stop:
+			self.STATUS='stalled'
 			#print "DEBUG> comiendo y no cobro"
 			t = t_pause_start - t_work_start
 		elif time_pause_stop < time_now < time_work_stop:
+			self.STATUS='running'
 			#print "DEBUG> de tardes y cobro"
 			t = (t_now - t_pause_stop) + (t_pause_start - t_work_start)
 		else:
+			self.STATUS='stalled'
 			#print "DEBUG> fuera de hora y no cobro"
 			t = t_now - t_now
 		return t
@@ -112,6 +118,10 @@ class Toffmo:
 		image.set_from_file(self.DATA_DIR + "earn.jpg")
 		vbox.add(image)
 		image.show()
+		# add a status label to vbox
+		lbl_status = gtk.Label("status: " + self.STATUS)
+		lbl_status.show()
+		vbox.add(lbl_status)
 		# add frame and label to vbox
 		frame = gtk.Frame()
 		label = gtk.Label(self.get_text_message())
