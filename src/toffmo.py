@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python -tt
 # -*- coding: utf-8 -*-
 #
 # toffmo: The OFFice MOtivator
@@ -11,10 +11,11 @@ import gtk
 import time
 import datetime
 import sys
+import os
 
 class Toffmo:
 	
-    CONFIG_FILE      = 'toffmo.conf'
+    CONFIG_FILE      = '~/.toffmo.conf'
     DATA_DIR         = ''
     MONEY_PER_HOUR   = '10'
     MONEY_SUFFIX     = '€'
@@ -26,14 +27,17 @@ class Toffmo:
     STATUS           = ''
 
     def parse_config_file(self):
-	cfg = ConfigParser.ConfigParser()
-	cfg.readfp(file(self.CONFIG_FILE))
-	self.MONEY_PER_HOUR = cfg.get('userconf', 'MONEY_PER_HOUR'.lower())
-	self.MONEY_SUFFIX = cfg.get('userconf', 'MONEY_SUFFIX'.lower())
-	self.TIME_WORK_START = cfg.get('userconf', 'TIME_WORK_START'.lower())
-	self.TIME_WORK_STOP = cfg.get('userconf', 'TIME_WORK_STOP'.lower())
-	self.TIME_PAUSE_START = cfg.get('userconf', 'TIME_PAUSE_START'.lower())
-	self.TIME_PAUSE_STOP = cfg.get('userconf', 'TIME_PAUSE_STOP'.lower())
+	self.CONFIG_FILE = os.path.expanduser(self.CONFIG_FILE)
+	if os.path.exists(self.CONFIG_FILE):
+	    os.path.expanduser(self.CONFIG_FILE)
+	    cfg = ConfigParser.ConfigParser()
+	    cfg.readfp(file(self.CONFIG_FILE))
+	    self.MONEY_PER_HOUR = cfg.get('userconf', 'MONEY_PER_HOUR'.lower())
+	    self.MONEY_SUFFIX = cfg.get('userconf', 'MONEY_SUFFIX'.lower())
+	    self.TIME_WORK_START = cfg.get('userconf', 'TIME_WORK_START'.lower())
+	    self.TIME_WORK_STOP = cfg.get('userconf', 'TIME_WORK_STOP'.lower())
+	    self.TIME_PAUSE_START = cfg.get('userconf', 'TIME_PAUSE_START'.lower())
+	    self.TIME_PAUSE_STOP = cfg.get('userconf', 'TIME_PAUSE_STOP'.lower())
 	return True
 
     def initialize_vars(self):
@@ -93,8 +97,9 @@ class Toffmo:
 	return False
     
     def __init__(self, config):
+
 	# get values from config file
-	self.CONFIG_FILE = config
+	if os.path.exists(config): self.CONFIG_FILE = config
 	self.parse_config_file()
 	self.initialize_vars()
 
@@ -161,7 +166,7 @@ def usage():
 
 if __name__ == "__main__":
 
-    config = 'toffmo.conf'
+    config = '~/.toffmo.conf'
 
     for opt in sys.argv[1:]:
 	    if opt in ("-h", "--help"):
