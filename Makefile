@@ -1,26 +1,35 @@
 #
 # Makefile
 
+PYTHON=/usr/bin/python
+
 DESTDIR=
-BINDIR=/usr/local/bin
-CONFDIR=/usr/local/etc
-DATADIR=/usr/local/share/toffmo
+PREFIX=/usr
+BINDIR=$(PREFIX)/bin
+CONFDIR=$(PREFIX)/etc
+DATADIR=$(PREFIX)/share/toffmo
 
 .PHONY: all install clean
 
-src/toffmo: src/toffmo.py
-	@sed -e "s|CONFIG_DIR=''|CONFIG_DIR='$(CONFDIR)/'|" \
-	    -e "s|DATA_DIR=''|DATA_DIR='$(DATADIR)/'|" \
-	    src/toffmo.py > src/toffmo
+all: clean src/toffmo.pyc src/toffmo
 
-all: src/toffmo
+src/toffmo.pyc: src/toffmo.py
+	@$(PYTHON) ./build.py && rm -f ./build.pyc
 
-install: src/toffmo src/toffmo.conf src/earn.jpg
+src/toffmo: src/toffmo.sh
+	@sed -e "s|PYTHON=.*|PYTHON=$(PYTHON)|" \
+	     -e "s|PREFIX=.*|PREFIX=$(PREFIX)|" \
+	     -e "s|DATADIR=.*|DATADIR=$(DATADIR)|" \
+	     src/toffmo.sh > src/toffmo
+	@chmod +x src/toffmo
+
+install: src/toffmo src/toffmo.pyc src/toffmo.conf src/toffmo.jpg
 	@install -D -m 0755 src/toffmo $(DESTDIR)$(BINDIR)/toffmo
-	@install -D -m 0644 src/toffmo.conf $(DESTDIR)$(CONFDIR)/toffmo.conf
-	@install -D -m 0644 src/earn.jpg $(DESTDIR)$(DATADIR)/earn.jpg
+	@install -D -m 0644 src/toffmo.conf $(DESTDIR)$(DATADIR)/toffmo.conf.example
+	@install -D -m 0644 src/toffmo.pyc $(DESTDIR)$(DATADIR)/toffmo.pyc
+	@install -D -m 0644 src/toffmo.jpg $(DESTDIR)$(DATADIR)/toffmo.jpg
 	
 clean:
-	@rm -f src/toffmo
+	@rm -f src/*.pyc src/toffmo
 
 # End of file
