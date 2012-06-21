@@ -1,0 +1,11 @@
+name=toffmo
+version=0.1
+release=1
+
+unpack_source() {
+  cp -r * $SRC
+}
+
+build() {
+  make DESTDIR=$PKG install
+}
