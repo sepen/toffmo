@@ -3,10 +3,12 @@ TODO
 
 * fix date issues
 
-* cx_freeze
+* improve GUI interface with glade3
+
+* make it portable to other systems:
   http://starship.python.net/crew/atuining/cx_Freeze
 
-* systray
+* add systray icon
   http://www.pygtk.org/docs/pygtk/class-gtkstatusicon.html
   http://www.daa.com.au/pipermail/pygtk/2005-August/010790.html
   http://maxinbjohn.blog.com/3132548/
